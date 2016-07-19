@@ -1,15 +1,15 @@
 # resource
 class Chef
   class Resource
-    # provides icinga2_envhostgroup
-    class Icinga2Envhostgroup < Chef::Resource
+    # provides icinga2_envendpoint
+    class Icinga2Envendpoint < Chef::Resource
       identity_attr :name
 
       def initialize(name, run_context = nil)
         super
-        @resource_name = :icinga2_envhostgroup if respond_to?(:resource_name)
-        @provides = :icinga2_envhostgroup
-        @provider = Chef::Provider::Icinga2Envhostgroup
+        @resource_name = :icinga2_envendpoint if respond_to?(:resource_name)
+        @provides = :icinga2_envendpoint
+        @provider = Chef::Provider::Icinga2Envendpoint
         @action = :create
         @allowed_actions = [:create, :delete, :nothing]
         @name = name
@@ -31,9 +31,25 @@ class Chef
         )
       end
 
-      def groups(arg = nil)
+      def port(arg = nil)
         set_or_return(
-          :groups, arg,
+          :port, arg,
+          :kind_of => Integer,
+          :default => node['icinga2']['endpoint_port']
+        )
+      end
+
+      def log_duration(arg = nil)
+        set_or_return(
+          :log_duration, arg,
+          :kind_of => String,
+          :default => nil
+        )
+      end
+
+      def endpoints(arg = nil)
+        set_or_return(
+          :endpoints, arg,
           :kind_of => Array,
           :default => []
         )
@@ -45,9 +61,9 @@ end
 # provider
 class Chef
   class Provider
-    # provides icinga2_envhostgroup
-    class Icinga2Envhostgroup < Chef::Provider::LWRPBase
-      provides :icinga2_envhostgroup if respond_to?(:provides)
+    # provides icinga2_envendpoint
+    class Icinga2Envendpoint < Chef::Provider::LWRPBase
+      provides :icinga2_envendpoint if respond_to?(:provides)
 
       def whyrun_supported?
         true
@@ -85,7 +101,11 @@ class Chef
           owner node['icinga2']['user']
           group node['icinga2']['group']
           mode 0o640
-          variables(:environment => new_resource.environment, :groups => new_resource.groups)
+          variables(
+            :environment => new_resource.environment,
+            :endpoints => new_resource.endpoints,
+            :log_duration => new_resource.log_duration
+          )
           notifies :reload, 'service[icinga2]'
         end
         ot.updated?
