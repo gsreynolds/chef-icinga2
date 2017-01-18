@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # resource
 class Chef
   class Resource
@@ -13,6 +14,14 @@ class Chef
         @action = :create
         @allowed_actions = [:create, :delete, :nothing]
         @name = name
+      end
+
+      def cookbook(arg = nil)
+        set_or_return(
+          :cookbook, arg,
+          :kind_of => String,
+          :default => 'icinga2'
+        )
       end
 
       def endpoints(arg = nil)

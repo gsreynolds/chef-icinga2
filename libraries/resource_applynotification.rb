@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Chef
   class Resource
     # provides icinga2_applynotification
@@ -12,6 +13,14 @@ class Chef
         @action = :create
         @allowed_actions = [:create, :delete, :nothing]
         @name = name
+      end
+
+      def cookbook(arg = nil)
+        set_or_return(
+          :cookbook, arg,
+          :kind_of => String,
+          :default => 'icinga2'
+        )
       end
 
       def object_type(arg = nil)

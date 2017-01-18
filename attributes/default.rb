@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 # http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/getting-started#getting-started
 
-default['icinga2']['version'] = '2.4.1-1'
+default['icinga2']['version'] = '2.5.4-1'
 
 default['icinga2']['enable_env_pki'] = false
 default['icinga2']['ignore_version'] = false

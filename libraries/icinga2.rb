@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 def evaluate_quotes(value)
   return value unless value.is_a? String
   if value.to_s =~ /\+|{{(.*?)}}/m
@@ -27,7 +28,7 @@ def icinga_format(toplevel)
     rval = '[ '
   when NilClass
     return 'null'
-  when String, Float, Fixnum
+  when String, Float, Integer
     return toplevel.inspect
   when Symbol
     return toplevel.to_s.inspect

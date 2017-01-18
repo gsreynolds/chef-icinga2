@@ -1,4 +1,5 @@
 
+# frozen_string_literal: true
 default['icinga2']['build_type'] = 'release' # options: stable, snapshot
 
 case node['platform_family']
@@ -49,7 +50,7 @@ when 'debian'
       default['icinga2']['apt']['key'] = '36862847'
 
       # icinga2 package version suffix
-      default['icinga2']['icinga2_version_suffix'] = '~ppa1~' + node['lsb']['codename'].to_s + '1'
+      default['icinga2']['icinga2_version_suffix'] = '~ppa1~' + node['lsb']['codename'].to_s + '2'
     end
   when 'debian'
     default['icinga2']['apt']['keyserver'] = nil

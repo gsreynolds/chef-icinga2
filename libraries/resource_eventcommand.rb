@@ -1,8 +1,17 @@
+# frozen_string_literal: true
 class Chef
   class Resource
     # provides icinga2_eventcommand
     class Icinga2Eventcommand < Chef::Resource
       identity_attr :name
+
+      def cookbook(arg = nil)
+        set_or_return(
+          :cookbook, arg,
+          :kind_of => String,
+          :default => 'icinga2'
+        )
+      end
 
       def initialize(name, run_context = nil)
         super

@@ -3,8 +3,69 @@ icinga2 CHANGELOG
 
 This file is used to list changes made in each version of the icinga2 cookbook.
 
-2.8.0
+2.9.1
 -----
+
+- Blerim Sheqa - Ignore foodcritic FC057
+
+- Virender Khatri - Feature #12785, update to latest package release
+
+- Virender Khatri - Bug #12609 fix, cannot do core_install on Ubuntu 14 LTS
+
+- Virender Khatri - Fix ido setup, require mysql client to load schema
+
+- Virender Khatri - Bug #12787, include recipe service_ido_schema only if node[icinga2][ido][load_schema]
+
+- Virender Khatri - Bug #12788, do not include recipe server_pnp unless classis_ui and pnp
+
+- Virender Khatri - Updated kitchen
+
+- Virender Khatri - Bug #12794, add db port to ido schema load
+
+- Virender Khatri - Bug #12795, deprecate node.set
+
+- Virender Khatri - Bug #12796, disable classic_ui by default
+
+- Virender Khatri - Added package installation for icingaweb2
+
+- Virender Khatri - Updated packages version
+
+- JJ Asghar - Fix Rubocop for Ruby3
+
+2.9.0
+-----
+
+- Gavin Reynolds - Allow re-notifications to be disabled by allowing the value 0 in the interval regex for applynotification
+
+- Blerim Sheqa - Add TESTING.md
+
+- Blerim Sheqa - Update integration testing
+
+- Blerim Sheqa - Add centos to testkitchen platforms
+
+- JJ Asghar - Fix rubocop
+
+- Gavin Reynolds - Add user and group attributes to logrotate conf
+
+- Virender Khatri - setup pki env zone endpoint resources if node[icinga2][enable_env_pki] is enabled
+
+- Virender Khatri - update server_region with cloud provider only if new_resource.server_region is not set
+
+- Virender Khatri - Should check resource for template_support first
+
+- Virender Khatri - Fix amazon linux apache modules
+
+- Virender Khatri - Fix default[icinga2][plugins_dir] value
+
+- Virender Khatri - Added issues_url in metadata
+
+- Virender Khatri - Update travis to User Ruby v2.2
+
+- Gavin Reynolds - Add merge_vars attribute to applyservice and allow for multiple Service definitions for set by adding service name prefix
+
+- Gavin Reynolds - Use platform family debian for both Debian and Ubuntu
+
+- Gavin Reynolds - Fix icinga2_classic_ui_htpasswd path for debian
 
 - Thomas Supertramp - Feature #11834, Add lwrp envendpoint / envzone lwrp for environment resource
 
@@ -18,8 +79,13 @@ This file is used to list changes made in each version of the icinga2 cookbook.
 
 - Thomas Supertramp - Feature #11960, Allow to set a var as command_endpoint and not only string
 
-2.7.1
------
+- Henry Finucane - Add unit tests for formatting output
+
+- Henry Finucane - Add function to format ruby data
+
+- Vincent Van Driessche - Fix notification, applynotification template for times parameter
+
+- Virender Khatri - Bug #10775, Add zone resource to icinga2_applydependency resource
 
 - Virender Khatri - Feature #10900, fix to allow multiple environment resources for an environment
 
