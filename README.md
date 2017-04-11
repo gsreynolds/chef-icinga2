@@ -1,7 +1,9 @@
 icinga2 Cookbook
 ==================
 
-[![Cookbook](http://img.shields.io/badge/cookbook-v2.9.1-green.svg)](https://github.com/icinga/chef-icinga2) [![Build Status](https://travis-ci.org/Icinga/chef-icinga2.svg?branch=master)](https://travis-ci.org/Icinga/chef-icinga2)[![Build Status](https://jenkins-01.eastus.cloudapp.azure.com/job/icinga2-cookbook/badge/icon)](https://jenkins-01.eastus.cloudapp.azure.com/job/icinga2-cookbook/)
+[![Cookbook](https://img.shields.io/github/tag/icinga/chef-icinga2.svg)](https://github.com/icinga/chef-icinga2) [![Build Status](https://travis-ci.org/Icinga/chef-icinga2.svg?branch=master)](https://travis-ci.org/Icinga/chef-icinga2)[![Build Status](https://jenkins-01.eastus.cloudapp.azure.com/job/icinga2-cookbook/badge/icon)](https://jenkins-01.eastus.cloudapp.azure.com/job/icinga2-cookbook/)
+
+![Icinga Logo](https://www.icinga.com/wp-content/uploads/2014/06/icinga_logo.png)
 
 This is a [Chef] cookbook to manage [Icinga2] using Chef LWRP.
 
@@ -197,14 +199,25 @@ use `Array` attribute `default['icinga2']['user_defined_objects_dir']` instead.
 
 ## Icinga2 Server Setup Recipes
 
+### Disable Default Configuration Directory
+
+If you are using this cookbook to manage `icinga2` configuration, set `default['icinga2']['disable_conf_d']` to `true`.
+
+Cookbook generated configuration files using LWRP are created under directory `default['icinga2']['objects_dir']`.
+
+>> `default['icinga2']['disable_conf_d']` default value is set to `true`.
+
+
 ### How to Install and Configure Icinga2 Server without UI
 
 - add recipe `icinga2::server` to your run_list
+
 
 ### How to Install and Configure Icinga2 Server with ClassicUI
 
 - set node['icinga2']['classic_ui']['enable'] = true
 - add recipe `icinga2::server` to your run_list
+
 
 ### How to Install and Configure Icinga2 Server with ClassicUI and PNP
 
@@ -687,6 +700,7 @@ Above LWRP resource will create `Host` objects for a chef environment nodes for 
 - *check_command* (optional, String)	- icinga `Host` object attribute `check_command`
 - *max_check_attempts* (optional, Integer)	- icinga `Host` object attribute `max_check_attempts`
 - *check_period* (optional, String)	- icinga `Host` object attribute `check_period`
+- *notification_period* (optional, String)	- icinga `Host` object attribute `notification_period`
 - *check_interval* (optional, String/Integer)	- icinga `Host` object attribute `check_interval`
 - *retry_interval* (optional, Integer)	- icinga `Host` object attribute `retry_interval`
 - *enable_notifications* (optional, TrueClass/FalseClass)	- icinga `Host` object attribute `enable_notifications`
@@ -842,6 +856,7 @@ Above LWRP resource will create an icinga `Host` template - `generic-host`.
 - *check_command* (optional, String)	- icinga `Host` object attribute `check_command`
 - *max_check_attempts* (optional, Integer)	- icinga `Host` object attribute `max_check_attempts`
 - *check_period* (optional, String)	- icinga `Host` object attribute `check_period`
+- *notification_period* (optional, String)	- icinga `Host` object attribute `notification_period`
 - *check_interval* (optional, String/Integer)	- icinga `Host` object attribute `check_interval`
 - *retry_interval* (optional, String/Integer)	- icinga `Host` object attribute `retry_interval`
 - *enable_notifications* (optional, TrueClass/FalseClass)	- icinga `Host` object attribute `enable_notifications`
@@ -933,6 +948,7 @@ Above LWRP resource will create an icinga `Service` template object for a `gener
 - *check_command* (optional)	- icinga `Service` object attribute `check_command`
 - *max_check_attempts* (optional)	- icinga `Service` object attribute `max_check_attempts`
 - *check_period* (optional)	- icinga `Service` object attribute `check_period`
+- *notification_period* (optional)	- icinga `Service` object attribute `notification_period`
 - *check_interval* (optional)	- icinga `Service` object attribute `check_interval`
 - *retry_interval* (optional)	- icinga `Service` object attribute `retry_interval`
 - *enable_notifications* (optional, TrueClass/FalseClass)	- icinga `Service` object attribute `enable_notifications`
@@ -1006,6 +1022,7 @@ Above LWRP resource will apply an icinga `Service` object with a Service for set
 - *check_command* (optional, String)	- icinga `Service` object attribute `check_command`
 - *max_check_attempts* (optional, Integer)	- icinga `Service` object attribute `max_check_attempts`
 - *check_period* (optional, String)	- icinga `Service` object attribute `check_period`
+- *notification_period* (optional, String)	- icinga `Service` object attribute `notification_period`
 - *check_interval* (optional, String/Integer)	- icinga `Service` object attribute `check_interval`
 - *retry_interval* (optional, String/Integer)	- icinga `Service` object attribute `retry_interval`
 - *enable_notifications* (optional, TrueClass/FalseClass)	- icinga `Service` object attribute `enable_notifications`
@@ -1933,7 +1950,7 @@ Above LWRP resource will apply `Dependency` to all `Host` objects for provided `
 
 ## Cookbook Advanced Attributes
 
-* `default['icinga2']['disable_conf_d']` (default: `false`): disable icinga2 `conf.d` default configuration directory in `icinga2.conf` and use LWRP to manage icinga2 objects / templates
+* `default['icinga2']['disable_conf_d']` (default: `true`): disable icinga2 `conf.d` default configuration directory in `icinga2.conf` and use LWRP to manage icinga2 objects / templates
 
 * `default['icinga2']['build_type']` (default: `release`): icinga2 repository build type, options: release snapshot
 
@@ -1981,7 +1998,7 @@ Above LWRP resource will apply `Dependency` to all `Host` objects for provided `
 
 ## Cookbook Core Attributes
 
-* `default['icinga2']['version']` (default: `2.5.4-1`): icinga2 version
+* `default['icinga2']['version']` (default: `2.6.1-X, calculated`): icinga2 version
 
 * `default['icinga2']['conf_dir']` (default: `/etc/icinga2`): icinga2 configuration location
 
@@ -2059,6 +2076,8 @@ Above LWRP resource will apply `Dependency` to all `Host` objects for provided `
 
 * `default['icinga2']['server']['object']['host']['check_period']` (default: `nil`)
 
+* `default['icinga2']['server']['object']['host']['notification_period']` (default: `nil`)
+
 * `default['icinga2']['server']['object']['host']['check_interval']` (default: `1800`)
 
 * `default['icinga2']['server']['object']['host']['retry_interval']` (default: `60`)
@@ -2090,23 +2109,23 @@ Above LWRP resource will apply `Dependency` to all `Host` objects for provided `
 
 ## Cookbook Icinga2 IDO Attributes
 
- * `default[:icinga2]['ido']['type']` (default: `mysql`): icinga2 ido type, valid are `mysql pgsql`
+ * `default['icinga2']['ido']['type']` (default: `mysql`): icinga2 ido type, valid are `mysql pgsql`
 
- * `default[:icinga2]['ido']['load_schema']` (default: `false`): whether to load db schema
+ * `default['icinga2']['ido']['load_schema']` (default: `false`): whether to load db schema
 
- * `default[:icinga2]['ido']['install_mysql_client']` (default: `false`): install mysql client using mysql official repository
+ * `default['icinga2']['ido']['install_mysql_client']` (default: `false`): install mysql client using mysql official repository
 
- * `default[:icinga2]['ido']['db_host']` (default: `localhost`): Icinga2 ido db host
+ * `default['icinga2']['ido']['db_host']` (default: `localhost`): Icinga2 ido db host
 
- * `default[:icinga2]['ido']['db_port']` (default: `3306`): Icinga2 ido db port
+ * `default['icinga2']['ido']['db_port']` (default: `3306`): Icinga2 ido db port
 
- * `default[:icinga2]['ido']['db_name']` (default: `icinga`): Icinga2 ido db name
+ * `default['icinga2']['ido']['db_name']` (default: `icinga`): Icinga2 ido db name
 
- * `default[:icinga2]['ido']['db_user']` (default: `icinga`): Icinga2 ido db user
+ * `default['icinga2']['ido']['db_user']` (default: `icinga`): Icinga2 ido db user
 
- * `default[:icinga2]['ido']['db_password']` (default: `icinga`): Icinga2 ido db password
+ * `default['icinga2']['ido']['db_password']` (default: `icinga`): Icinga2 ido db password
 
- * `default[:icinga2]['ido']['mysql_home']` (default: `/etc/mysql`): sets value for environment variable `MYSQL_HOME` for schema load
+ * `default['icinga2']['ido']['mysql_home']` (default: `/etc/mysql`): sets value for environment variable `MYSQL_HOME` for schema load
 
  * `default['icinga2']['ido']['mysql_version']` (default: `false`): install mysql client if set true
 
@@ -2143,32 +2162,32 @@ Above LWRP resource will apply `Dependency` to all `Host` objects for provided `
 
 ## Cookbook Icingaweb2 Attributes
 
- * `default[:icinga2][:web2][:enable]` (default: `false`): whether to setup icingaweb2
+ * `default['icinga2']['web2']['enable']` (default: `false`): whether to setup icingaweb2
 
- * `default[:icinga2][:web2][:install_method]` (default: `package`): icingaweb2 install method, options: package, source
+ * `default['icinga2']['web2']['install_method']` (default: `package`): icingaweb2 install method, options: package, source
 
- * `default[:icinga2][:web2][:source_url]` (default: `git://git.icinga.org/icingaweb2.git`):
+ * `default['icinga2']['web2']['source_url']` (default: `git://git.icinga.org/icingaweb2.git`):
 
- * `default[:icinga2][:web2][:version]` (default: `2.3.4`): icingaweb2 package version / git branch / git tag etc.
+ * `default['icinga2']['web2']['version']['icingaweb2']` (default: `2.4.1-1`): icingaweb2 version
 
- * `default[:icinga2][:web2][:release]` (default: `1`): icingaweb2 package release
+ * `default['icinga2']['web2']['version']['icingacli']` (default: `2.4.1-1`): icingacli version
 
- * `default[:icinga2][:web2][:web_root]` (default: `/usr/share/icingaweb2`): icingaweb2 web root location
+ * `default['icinga2']['web2']['web_root']` (default: `/usr/share/icingaweb2`): icingaweb2 web root location
 
- * `default[:icinga2][:web2][:web_uri]` (default: `/icingaweb2`): icingweb2 web uri
+ * `default['icinga2']['web2']['web_uri']` (default: `/icingaweb2`): icingweb2 web uri
 
- * `default[:icinga2][:web2][:conf_dir]` (default: `/etc/icingaweb2`): icingaweb2 config directory
+ * `default['icinga2']['web2']['conf_dir']` (default: `/etc/icingaweb2`): icingaweb2 config directory
 
- * `default[:icinga2][:web2][:log_dir]` (default: `/var/log/icingaweb2`): icingaweb2 log directory
+ * `default['icinga2']['web2']['log_dir']` (default: `/var/log/icingaweb2`): icingaweb2 log directory
 
 
 ## Cookbook Ulimit Attributes
 
- * `default[:icinga2][:limits][:memlock]` (default: `unlimited`): Icinga2 service user memory limit
+ * `default['icinga2']['limits']['memlock']` (default: `unlimited`): Icinga2 service user memory limit
 
- * `default[:icinga2][:limits][:nofile]` (default: `48000`): Icinga2 service user file limit
+ * `default['icinga2']['limits']['nofile']` (default: `48000`): Icinga2 service user file limit
 
- * `default[:icinga2][:limits][:nproc]` (default: `unlimited`): Icinga2 service user process limit
+ * `default['icinga2']['limits']['nproc']` (default: `unlimited`): Icinga2 service user process limit
 
 
 ## Cookbook Repository Attributes
@@ -2208,9 +2227,9 @@ Above LWRP resource will apply `Dependency` to all `Host` objects for provided `
 
 * `default['icinga2']['classic_ui']['enable']` (default: `false`): setup icinga2 classic-ui if set true
 
-* `default['icinga2']['classic_ui']['version']` (default: `2.5.4-1`): icinga2 classic-ui package version
+* `default['icinga2']['classic_ui']['version']` (default: `2.6.1-1`): icinga2 classic-ui package version
 
-* `default['icinga2']['classic_ui']['gui_version']` (default: `1.13.3-0`): icinga2 gui package version
+* `default['icinga2']['classic_ui']['gui_version']` (default: `1.14.0-0`): icinga2 gui package version
 
 * `default['icinga2']['classic_ui']['web_root']` (default: `/usr/share/icinga`): icinga2 web doc root directory location
 

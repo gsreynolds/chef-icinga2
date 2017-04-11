@@ -33,11 +33,11 @@ when 'debian'
                      php5-imagick php-pear php5-xmlrpc php5-xsl php5-mysql
                      php-soap php5-gd php5-ldap php5-pgsql php5-intl)
   when 'xenial'
-    os_packages = %w(g++ mailutils php5.6 php5.6-cli php5.6-fpm build-essential
+    os_packages = %w(g++ mailutils php7.0 php7.0-cli php7.0-fpm build-essential
                      libgd2-xpm-dev libjpeg62 libpng12-0
-                     libpng12-dev libapache2-mod-php5.6 imagemagick
-                     php5.6-imagick php-pear php5.6-xmlrpc php5.6-xsl php5.6-mysql
-                     php-soap php5.6-gd php5.6-ldap php5.6-pgsql php5.6-intl)
+                     libpng12-dev libapache2-mod-php7.0 imagemagick
+                     php7.0-imagick php-pear php7.0-xmlrpc php7.0-xsl php7.0-mysql
+                     php-soap php7.0-gd php7.0-ldap php7.0-pgsql php7.0-intl)
   end
 
   apt_repository 'ondrej-php' do
@@ -51,7 +51,7 @@ when 'rhel'
   os_packages = %w(gcc gcc-c++ glibc glibc-common mailx php php-devel gd
                    gd-devel libjpeg libjpeg-devel libpng libpng-devel php-gd
                    php-fpm php-cli php-pear php-xmlrpc php-xsl php-pdo
-                   php-soap php-ldap php-mysql php-pgsql php-intl git php-pecl-imagick)
+                   php-soap php-ldap php-mysql php-pgsql php-intl php-pecl-imagick)
   # yum epel repository is required for php-pecl-imagick
   include_recipe 'yum-epel' if node['platform'] != 'amazon' && node['icinga2']['setup_epel']
   os_packages.push('git') if node['icinga2']['web2']['install_method'] == 'source' && node['icinga2']['web2']['enable'] == true

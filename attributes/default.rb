@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 # http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/getting-started#getting-started
 
-default['icinga2']['version'] = '2.5.4-1'
+default['icinga2']['version'] = value_for_platform(
+  %w(centos redhat fedora amazon) => { 'default' => '2.6.1-1' },
+  %w(debian ubuntu raspbian) => { 'default' => '2.6.1-1' }
+)
 
 default['icinga2']['enable_env_pki'] = false
 default['icinga2']['ignore_version'] = false
@@ -15,7 +18,7 @@ default['icinga2']['zones_dir'] = ::File.join(node['icinga2']['conf_dir'], 'zone
 default['icinga2']['pnp'] = false
 
 # avoid conflicts
-default['icinga2']['disable_conf_d'] = false
+default['icinga2']['disable_conf_d'] = true
 default['icinga2']['disable_repository_d'] = false
 default['icinga2']['add_cloud_custom_vars'] = true
 default['icinga2']['add_inet_custom_vars'] = false

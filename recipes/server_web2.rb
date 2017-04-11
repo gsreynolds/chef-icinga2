@@ -18,10 +18,16 @@
 # limitations under the License.
 #
 
-web2_version = node['icinga2']['web2']['install_method'] == 'source' ? 'v' + node['icinga2']['web2']['version'] : node['icinga2']['web2']['version'] + '-' + node['icinga2']['web2']['release'] + node['icinga2']['icinga2_version_suffix'].to_s
-cli_version = node['icinga2']['web2']['version'] + '-' + node['icinga2']['web2']['release'] + node['icinga2']['icinga2_version_suffix']
+cli_package_version = node['icinga2']['web2']['version']['icingacli'] + node['icinga2']['icinga2_version_suffix']
+web2_package_version = node['icinga2']['web2']['version']['icingaweb2'] + node['icinga2']['icinga2_version_suffix']
+web2_source_version = 'v' + node['icinga2']['web2']['version']['icingaweb2'].split('-')[0]
 
-puts web2_version
+if node.attribute?('time') && node['time'].attribute?('timezone')
+  timezone = node['time']['timezone']
+else
+  timezone = 'UTC'
+  Chef::Log.warn("missing attribute node['time']['timezone'], using default value 'UTC'")
+end
 
 directory node['icinga2']['web2']['conf_dir'] do
   owner node[node['icinga2']['web_engine']]['user']
@@ -51,16 +57,20 @@ end
 # set php time zone
 php_ini = if node['platform_family'] == 'rhel'
             '/etc/php.ini'
-          elsif node['lsb']['codename'] == 'xenial'
-            '/etc/php/5.6/apache2/php.ini'
+          elsif node['platform_family'] == 'debian'
+            if node['lsb']['codename'] == 'xenial'
+              '/etc/php/7.0/apache2/php.ini'
+            else
+              '/etc/php5/apache2/php.ini'
+            end
           else
-            '/etc/php5/apache2/php.ini'
+            raise "platform_family #{node['platform_family']} not supported"
           end
 
 ruby_block 'set php timezone' do
   block do
     fe = Chef::Util::FileEdit.new(php_ini)
-    fe.search_file_replace_line(/^;date.timezone =.*/, "date.timezone = #{node['time']['timezone']}")
+    fe.search_file_replace_line(/^;date.timezone =.*/, "date.timezone = #{timezone}")
     fe.write_file
   end
 end
@@ -79,7 +89,7 @@ if node['icinga2']['web2']['install_method'] == 'source'
 
   git node['icinga2']['web2']['web_root'] do
     repository node['icinga2']['web2']['source_url']
-    revision web2_version
+    revision web2_source_version
     user node[node['icinga2']['web_engine']]['user']
     group node[node['icinga2']['web_engine']]['group']
     only_if { node['icinga2']['web2']['install_method'] == 'source' }
@@ -88,12 +98,12 @@ if node['icinga2']['web2']['install_method'] == 'source'
 else
   package 'icingaweb2' do
     # skip ubuntu version for now
-    version web2_version if node['platform_famil'] == 'rhel'
+    version web2_package_version unless node['icinga2']['ignore_version'] || !(node['platform_family'] == 'rhel')
     notifies :restart, 'service[icinga2]', :delayed
   end
 
   package 'icingacli' do
-    version cli_version
+    version cli_package_version unless node['icinga2']['ignore_version']
     notifies :restart, 'service[icinga2]', :delayed
     only_if { node['platform_family'] == 'rhel' }
   end
