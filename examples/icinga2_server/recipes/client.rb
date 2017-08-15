@@ -15,7 +15,7 @@ if node['icinga2']['recreate_client_certs']
     '/etc/icinga2/pki/ca.crt',
     '/etc/icinga2/pki/trusted-master.crt',
     "/etc/icinga2/pki/#{node.fqdn}.key",
-    "/etc/icinga2/pki/#{node.fqdn}.crt"
+    "/etc/icinga2/pki/#{node.fqdn}.crt",
   ].each do |file|
     file file do
       action :delete
@@ -45,7 +45,7 @@ bash 'Request master certificate' do
        "--host #{server_host} || " \
        "(echo 'Icinga2 Server not running';exit 1)"
   not_if { ::File.exist?(master_crt) }
-  notifies :reload, 'service[icinga2]', :delayed
+  notifies platform?('windows') ? :restart : :reload, 'service[icinga2]', :delayed
 end
 
 bash 'Request master ca' do
@@ -58,7 +58,7 @@ bash 'Request master ca' do
        "--ca #{master_ca} || " \
        "(echo 'Icinga2 Server not running';exit 1)"
   not_if { ::File.exist?(master_ca) }
-  notifies :reload, 'service[icinga2]', :delayed
+  notifies platform?('windows') ? :restart : :reload, 'service[icinga2]', :delayed
 end
 
 icinga2_endpoint node['icinga2']['server']['fqdn'] do

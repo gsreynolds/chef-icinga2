@@ -1,0 +1,82 @@
+---
+<%
+  http_port = ENV['KITCHEN_ICINGA2_HTTP_PORT'] || 8080
+  https_port = ENV['KITCHEN_ICINGA2_HTTPS_PORT'] || 8443
+  db_host = ENV['KITCHEN_DB_HOST'] || '127.0.0.1'
+  chef_omnibus_url = ENV['KITCHEN_CHEF_OMNIBUS_URL'] || nil
+%>
+driver:
+  name: dokken
+  privileged: true
+  chef_version: 12.19.36
+
+transport:
+  name: dokken
+
+verifier:
+  root_path: '/opt/verifier'
+  sudo: false
+
+provisioner:
+  name: dokken
+  <% if chef_omnibus_url %>
+  chef_omnibus_url: '<%= chef_omnibus_url %>'
+  <% end %>
+
+platforms:
+  - name: ubuntu-14.04
+    driver:
+      image: ubuntu:14.04
+      pid_one_command: /sbin/init
+      intermediate_instructions:
+        - RUN /usr/bin/apt-get update
+        - RUN /usr/bin/apt-get install -y net-tools apt-transport-https initscripts procps lsb-release
+    attributes:
+      icinga2-test-mysql-instance:
+        service_manager: sysvinit
+      apt:
+        confd:
+          install_recommends: false
+
+  - name: ubuntu-16.04
+    driver:
+      image: ubuntu:16.04
+      pid_one_command: /bin/systemd
+      intermediate_instructions:
+        - RUN /usr/bin/apt-get update
+        - RUN /usr/bin/apt-get install -y apt-transport-https lsb-release procps net-tools
+    attributes:
+      apt:
+        confd:
+          install_recommends: false
+
+  - name: debian-8
+    driver:
+      image: debian:8
+      pid_one_command: /bin/systemd
+      intermediate_instructions:
+        - RUN /usr/bin/apt-get update
+        - RUN /usr/bin/apt-get install -y net-tools apt-transport-https initscripts procps lsb-release
+    attributes:
+      apt:
+        confd:
+          install_recommends: false
+
+  - name: centos-6.8
+    driver:
+      image: centos:6.8
+      pid_one_command: /sbin/init
+      platform: rhel
+      intermediate_instructions:
+        - RUN yum install -y net-tools initscripts which
+    attributes:
+      icinga2-test-mysql-instance:
+        service_manager: sysvinit
+
+  - name: centos-7
+    driver:
+      image: centos:7
+      pid_one_command: /usr/lib/systemd/systemd
+      platform: rhel
+      intermediate_instructions:
+        - RUN yum install -y net-tools initscripts systemd-sysv which lsof

@@ -1,11 +1,73 @@
-language: ruby
-bundler_args: --without integration
-rvm:
-  - 2.2.2
+sudo: required
+dist: trusty
+
+# TODO: return back when with chef-client 13 support
+# addons:
+#   apt:
+#     sources:
+#       - chef-current-trusty
+#     packages:
+#       - chefdk
+
+before_install:
+  - wget 'https://packages.chef.io/files/stable/chefdk/1.5.0/ubuntu/14.04/chefdk_1.5.0-1_amd64.deb'
+  - sudo dpkg -i chefdk_1.5.0-1_amd64.deb
+
+# Don't run bundle install
+install: echo "skip bundle install"
+
 branches:
   only:
     - master
-# uncomment this line if your project needs to run something other than `rake`:
-# script: bundle exec rspec spec
+    - /^(?i:travis).*$/
+    - /^(?i:feature).*$/
+    - /^(?i:fix).*$/
+    - /^(?i:release).*$/
+
+services: docker
+
+env:
+  matrix:
+    - INSTANCE=server-ubuntu-1404
+    - INSTANCE=server-ubuntu-1604
+    - INSTANCE=server-debian-8
+    - INSTANCE=server-centos-68
+    - INSTANCE=server-centos-7
+    - INSTANCE=client-ubuntu-1404
+    - INSTANCE=client-ubuntu-1604
+    - INSTANCE=client-debian-8
+    - INSTANCE=client-centos-68
+    - INSTANCE=client-centos-7
+    - INSTANCE=web2-package-ubuntu-1404
+    - INSTANCE=web2-package-ubuntu-1604
+    - INSTANCE=web2-package-debian-8
+    - INSTANCE=web2-package-centos-68
+    - INSTANCE=web2-package-centos-7
+    - INSTANCE=web2-source-ubuntu-1404
+    - INSTANCE=web2-source-ubuntu-1604
+    - INSTANCE=web2-source-debian-8
+    - INSTANCE=web2-source-centos-68
+    - INSTANCE=web2-source-centos-7
+    - INSTANCE=classicui-ubuntu-1404
+    - INSTANCE=classicui-ubuntu-1604
+    - INSTANCE=classicui-debian-8
+    - INSTANCE=classicui-centos-68
+    - INSTANCE=classicui-centos-7
+
 script:
-  - bundle exec rake lint
+  - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml /opt/chefdk/embedded/bin/kitchen verify ${INSTANCE}
+  - cat .kitchen/logs/kitchen.log
+
+before_script:
+  - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
+  - eval "$(/opt/chefdk/bin/chef shell-init bash)"
+  - /opt/chefdk/embedded/bin/chef --version
+  - /opt/chefdk/embedded/bin/cookstyle --version
+  - /opt/chefdk/embedded/bin/foodcritic --version
+
+
+matrix:
+  include:
+    - script:
+      - /opt/chefdk/bin/chef exec rake
+      env: UNIT_AND_LINT=1

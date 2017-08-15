@@ -1,7 +1,7 @@
 icinga2 Cookbook
 ==================
 
-[![Cookbook](https://img.shields.io/github/tag/icinga/chef-icinga2.svg)](https://github.com/icinga/chef-icinga2) [![Build Status](https://travis-ci.org/Icinga/chef-icinga2.svg?branch=master)](https://travis-ci.org/Icinga/chef-icinga2)[![Build Status](https://jenkins-01.eastus.cloudapp.azure.com/job/icinga2-cookbook/badge/icon)](https://jenkins-01.eastus.cloudapp.azure.com/job/icinga2-cookbook/)
+[![Cookbook](https://img.shields.io/github/tag/icinga/chef-icinga2.svg)](https://github.com/icinga/chef-icinga2) [![Build Status](https://travis-ci.org/Icinga/chef-icinga2.svg?branch=master)](https://travis-ci.org/Icinga/chef-icinga2) [![Build Status](https://jenkins-01.eastus.cloudapp.azure.com/job/icinga2-cookbook/badge/icon)](https://jenkins-01.eastus.cloudapp.azure.com/job/icinga2-cookbook/)
 
 ![Icinga Logo](https://www.icinga.com/wp-content/uploads/2014/06/icinga_logo.png)
 
@@ -36,7 +36,7 @@ This cookbook is being developed for Icinga2 - v2.2.x and later versions.
 
 ## Supported OS
 
- This cookbook has been tested on CentOS 6.8, CentOS 7.2 and Ubuntu 14.04.
+ This cookbook has been tested on CentOS 6.8, CentOS 7.2 Ubuntu 14.04 Windows Server 2012 R2, and Windows 10
 
 
 ## Supported Icinga2 Install Types
@@ -46,7 +46,7 @@ Currently Icinga2 installation is supported **ONLY** via Repository Packages, as
 
 ## Chef Requirement
 
-This cookbook requires Chef Version 11.x or above.
+This cookbook requires Chef Version 11.x thru 12.x
 
 
 ## Contributing
@@ -450,7 +450,7 @@ e.g. to add a custom var `hardware` with value of node attribute `node['dmi']['s
 
 ```
 icinga2_environment 'environment' do
-  add_ohai_vars 'hardware' => %w(dmi system manufacturer)
+  add_node_vars 'hardware' => %w(dmi system manufacturer)
 end
 ```
 
@@ -693,7 +693,7 @@ Above LWRP resource will create `Host` objects for a chef environment nodes for 
 - *server_region* (optional, String)	- icinga2 server region can be overridden if cloud provider is not supported by the cookbook using this attribute
 - *add_cloud_custom_vars* (optional, TrueClass/FalseClass)	- whether to add cloud attributes, currently supports amazon ec2, e.g. instance id, vpc subnet etc.
 - *add_inet_custom_vars* (optional, TrueClass/FalseClass)	- whether to add inet ip address custom vars to Host objects
-- *add_node_vars* (optional, Hash)	- add node attributes to custom vars, e.g. `add_ohai_vars 'hardware' => %w(dmi system manufacturer)` will add a custom var hardware with value of node attribute `node['dmi']['system']['manufacturer']`
+- *add_node_vars* (optional, Hash)	- add node attributes to custom vars, e.g. `add_node_vars 'hardware' => %w(dmi system manufacturer)` will add a custom var hardware with value of node attribute `node['dmi']['system']['manufacturer']`
 - *env_filter_node_vars* (optional, Hash)	- filter or match chef nodes for a given `Hash` attribute key value pairs
 - *env_skip_node_vars* (optional, Hash)	- ignore chef nodes for a given `Hash` attribute key value pairs
 - *import* (optional, String)	- icinga `Host` object import template attribute
@@ -1989,8 +1989,6 @@ Above LWRP resource will apply `Dependency` to all `Host` objects for provided `
 * `default['icinga2']['ignore_resolv_error']` (default: `true`): whether to ignore node fqdn resolve errors while collecting for a chef environment
 
 * `default['icinga2']['web_engine']` (default: `'apache'): icinga2 web server, currently supports only apache
-
-* `default['icinga2']['install_nagios_plugins']` (default: `true`): install nagios plugins to icinga2 server and clients
 
 * `default['icinga2']['enable_env_pki']` (default: `false`): whether to create env endpoints, zones and pki_tickets
 
