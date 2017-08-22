@@ -8,9 +8,9 @@ describe 'icinga2::server_classic_ui' do
   #  stub_command("which php").and_return(true)
   # end
 
-  context 'rhel' do
+  shared_context 'rhel_family' do
     let(:chef_run) do
-      ChefSpec::SoloRunner.new(platform: 'centos', version: '6.4') do |node|
+      ChefSpec::SoloRunner.new(platform: 'centos', version: '6.8') do |node|
         node.automatic['platform_family'] = 'rhel'
         node.override['icinga2']['classic_ui']['enable'] = true
         node.override['icinga2']['ignore_version'] = true
@@ -55,9 +55,33 @@ describe 'icinga2::server_classic_ui' do
     end
   end
 
+  context 'rhel' do
+    let(:chef_run) do
+      ChefSpec::SoloRunner.new(platform: 'centos', version: '6.8') do |node|
+        node.automatic['platform_family'] = 'rhel'
+        node.override['icinga2']['classic_ui']['enable'] = true
+        node.override['icinga2']['ignore_version'] = true
+      end.converge(described_recipe)
+    end
+
+    include_context 'rhel_family'
+  end
+
+  context 'amazon' do
+    let(:chef_run) do
+      ChefSpec::SoloRunner.new(platform: 'amazon', version: '2017.03') do |node|
+        node.automatic['platform_family'] = 'amazon'
+        node.override['icinga2']['classic_ui']['enable'] = true
+        node.override['icinga2']['ignore_version'] = true
+      end.converge(described_recipe)
+    end
+
+    include_context 'rhel_family'
+  end
+
   context 'ubuntu' do
     let(:chef_run) do
-      ChefSpec::SoloRunner.new(platform: 'ubuntu', version: '12.04') do |node|
+      ChefSpec::SoloRunner.new(platform: 'ubuntu', version: '14.04') do |node|
         node.automatic['platform_family'] = 'debian'
         node.override['icinga2']['classic_ui']['enable'] = true
         node.override['icinga2']['ignore_version'] = true

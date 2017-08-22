@@ -13,18 +13,18 @@ class Chef
       end
 
       action :create do
-        new_resource.updated_by_last_action(object_template)
+        object_template
       end
 
       action :delete do
-        new_resource.updated_by_last_action(object_template)
+        object_template
       end
 
       protected
 
       # collect object defined resources
       def object_resources
-        run_context.resource_collection.select do |resource|
+        Chef.run_context.resource_collection.select do |resource|
           case new_resource.resource_name
           when :icinga2_apilistener
             resource.is_a?(Chef::Resource::Icinga2Apilistener)
