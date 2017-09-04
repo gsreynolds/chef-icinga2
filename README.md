@@ -503,6 +503,7 @@ Similarly, `ignore where` statements are created using LWRP resource `Array` att
 Currently icinga2 cookbook supports below Objects LWRP Resources:
 
 - icinga2_apilistener
+- icinga2_apiuser
 - icinga2_applynotification
 - icinga2_applyservice
 - icinga2_checkcommand
@@ -1722,6 +1723,30 @@ Above LWRP resource will create an icinga `ApiListener` object.
 - *accept_commands* (optional, TrueClass/FalseClass)	- icinga `ApiListener` attribute `accept_commands`
 
 
+## LWRP icinga2_apiuser
+
+LWRP `apiuser` creates an icinga `ApiUser` object.
+
+
+**LWRP ApiUser example**
+
+        icinga2_apiuser 'master' do
+          password 'mysecretapipassword'
+          client_cn 'myname'
+          permissions '["*"]'
+        end
+
+Above LWRP resource will create an icinga `apiuser` object.
+
+
+**LWRP Options**
+
+- *action* (optional, String) - default :enable, options: :enable, :disable
+- *password* (required, String) - icinga `apiuser` attribute `password`
+- *permissions* (required, String) - icinga `apiuser` attribute `permissions`
+- *client_cn* (optional, String) - icinga `apiuser` attribute `client_cn`
+
+
 ## LWRP icinga2_livestatuslistener
 
 LWRP `livestatuslistener` creates an icinga `LiveStatusListener` object.
@@ -2051,6 +2076,12 @@ Above LWRP resource will apply `Dependency` to all `Host` objects for provided `
 * `default['icinga2']['cmdgroup']` (default: `icingacmd`): icinga2 cmd user group
 
 * `default['icinga2']['apache_modules']` (default: `calculated`): apache modules / apache2 cookbook recipe to enable
+
+* `default['icinga2']['apache_conf_cookbook']` (default: `icinga2`): cookbook for apache templates
+
+* `default['icinga2']['apache_classic_ui_template']` (default: `apache.vhost.icinga2_classic_ui.conf.#{node['platform_family']}.erb`): apache template for classic ui
+
+* `default['icinga2']['apache_web2_template']` (default: `apache.vhost.icinga2_web2.erb`): apache template for icingaweb2
 
 
 ## Cookbook Icinga2 Constants Attributes
